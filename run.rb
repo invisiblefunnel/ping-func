@@ -13,11 +13,11 @@ CHAIN.(DEF)
                  (FETCH.
                    (ENV, 'PING_INTERVAL', 20*60)))
   .(:URLS, MAP.
-             ((SPLIT.
+             (STRIP,
+             (SPLIT.
                (FETCH.
                  (ENV, 'PING_URLS', ''),
-               ',')),
-             STRIP))
+               ','))))
 
 CHAIN.(LOG)
   .('PING_INTERVAL = %s seconds' % INTERVAL)
@@ -26,5 +26,5 @@ CHAIN.(LOG)
 SYNCHRONY
   .(->{
     CHAIN.(PERIODICALLY)
-      .(INTERVAL/10, ->{ LOG.('still alive...') })
-      .(INTERVAL, ->{ EACH.(URLS, PING) }) })
+      .(->{ LOG.('still alive...') }, INTERVAL/10)
+      .(->{ EACH.(PING, URLS) }, INTERVAL) })
