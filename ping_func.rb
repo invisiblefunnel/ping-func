@@ -14,7 +14,7 @@ module PingFunc
     .(:MAP, ->(func, list){ res = []; EACH.(->(val){ res << func.(val) }, list); res })
     .(:PRINT, ->(value, sync = true) { $stdout.sync = sync; puts(value) })
     .(:FORMATTED_LOG, ->(formatter = IDENTITY){ ->(value){ PRINT.(formatter.(value), true) } })
-    .(:FORMATTER, ->(value){ "%s: %s" % [self, value] })
+    .(:FORMATTER, ->(value){ "%s[%s]: %s" % [self, Time.now, value] })
     .(:LOG, FORMATTED_LOG.(FORMATTER))
     .(:ARGLOG, ->(func){ ->(*args){ LOG.(args); func.(*args) } })
     .(:PERIODICALLY, ->(func, interval){ EM.add_periodic_timer(interval, &func) })
